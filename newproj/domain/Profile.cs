@@ -10,11 +10,12 @@ namespace project.Controllers
     {
         public const string EntryDatePropertyName = "ДатаВъезда";
         public const string ApplicationDatePropertyName = "ДатаЗаявления";
+        public const string PurposePropertyName = "ЦельПребывания";
+        public const string CitizenshipPropertyName = "Гражданство";
+        public const string ResettlementProgramPropertyName = "УчастникГоспрограммыПереселения";
 
         public string Name { get; set; }
         public string Login { get; set; }
-        public Purpose Purpose { get; set; }
-        public Citizenship Citizenship { get; set; }
         public int? DurationDays { get; set; }
         public string RejectionReason { get; set; }
         public List<ProfileProperty> Properties { get; set; }
@@ -30,7 +31,11 @@ namespace project.Controllers
 
         public bool IsForeignCitizen
         {
-            get { return Citizenship != null && Citizenship.Name != "РФ"; }
+            get
+            {
+                var citizenship = GetCitizenship();
+                return !string.IsNullOrWhiteSpace(citizenship) && citizenship != "РФ";
+            }
         }
 
         public string GetPropertyValue(string propertyName)
@@ -65,6 +70,34 @@ namespace project.Controllers
         public bool HasApplication()
         {
             return GetApplicationDate().HasValue;
+        }
+
+        public string GetPurpose()
+        {
+            return GetPropertyValue(PurposePropertyName);
+        }
+
+        public void SetPurpose(string purpose)
+        {
+            SetProperty(PurposePropertyName, purpose);
+        }
+
+        public string GetCitizenship()
+        {
+            return GetPropertyValue(CitizenshipPropertyName);
+        }
+
+        public void SetCitizenship(string citizenship)
+        {
+            SetProperty(CitizenshipPropertyName, citizenship);
+        }
+
+        public bool IsResettlementProgramParticipant()
+        {
+            return string.Equals(
+                GetPropertyValue(ResettlementProgramPropertyName),
+                "Да",
+                StringComparison.OrdinalIgnoreCase);
         }
 
         public void SetEntryDate(DateTime entryDate)

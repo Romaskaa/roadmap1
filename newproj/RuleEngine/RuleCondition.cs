@@ -45,40 +45,6 @@ namespace newproj.RuleEngine
         }
     }
 
-    public class PurposeCondition : IRuleCondition
-    {
-        private readonly HashSet<string> _purposes;
-
-        public PurposeCondition(IEnumerable<string> purposes)
-        {
-            _purposes = new HashSet<string>(purposes ?? Enumerable.Empty<string>());
-        }
-
-        public bool IsSatisfied(Profile citizen)
-        {
-            return citizen != null &&
-                   citizen.Purpose != null &&
-                   _purposes.Contains(citizen.Purpose.Name);
-        }
-    }
-
-    public class CitizenshipCondition : IRuleCondition
-    {
-        private readonly HashSet<string> _citizenships;
-
-        public CitizenshipCondition(IEnumerable<string> citizenships)
-        {
-            _citizenships = new HashSet<string>(citizenships ?? Enumerable.Empty<string>());
-        }
-
-        public bool IsSatisfied(Profile citizen)
-        {
-            return citizen != null &&
-                   citizen.Citizenship != null &&
-                   _citizenships.Contains(citizen.Citizenship.Name);
-        }
-    }
-
     public class StayDurationCondition : IRuleCondition
     {
         private readonly int? _minExclusive;
@@ -92,10 +58,11 @@ namespace newproj.RuleEngine
 
         public bool IsSatisfied(Profile citizen)
         {
-            if (citizen == null || !citizen.DurationDays.HasValue)
+            if (citizen == null)
                 return false;
 
-            var value = citizen.DurationDays.Value;
+            var value = citizen.DurationDays
+                ?? (int)(DateTime.Now.Date - citizen.GetEntryDate().Date).TotalDays;
 
             if (_minExclusive.HasValue && value <= _minExclusive.Value)
                 return false;
@@ -141,6 +108,29 @@ namespace newproj.RuleEngine
 
             var actualValue = citizen.GetPropertyValue(_propertyName);
             return string.Equals(actualValue, _expectedValue, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    public class ProfilePropertyInSetCondition : IRuleCondition
+    {
+        private readonly string _propertyName;
+        private readonly HashSet<string> _expectedValues;
+
+        public ProfilePropertyInSetCondition(string propertyName, IEnumerable<string> expectedValues)
+        {
+            _propertyName = propertyName;
+            _expectedValues = new HashSet<string>(
+                expectedValues ?? Enumerable.Empty<string>(),
+                StringComparer.OrdinalIgnoreCase);
+        }
+
+        public bool IsSatisfied(Profile citizen)
+        {
+            if (citizen == null)
+                return false;
+
+            var actualValue = citizen.GetPropertyValue(_propertyName);
+            return !string.IsNullOrWhiteSpace(actualValue) && _expectedValues.Contains(actualValue);
         }
     }
 }

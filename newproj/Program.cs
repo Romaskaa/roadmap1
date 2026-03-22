@@ -97,7 +97,7 @@ namespace project
             var purposes = controller.GetListPurposes();
             Console.WriteLine("\nВыберите цель пребывания:");
             for (int i = 0; i < purposes.Count; i++)
-                Console.WriteLine($"{i + 1}. {purposes[i].Name}");
+                Console.WriteLine($"{i + 1}. {purposes[i]}");
 
             if (!int.TryParse(Console.ReadLine(), out int purposeIndex) || purposeIndex < 1 || purposeIndex > purposes.Count)
             {
@@ -105,12 +105,12 @@ namespace project
                 return;
             }
 
-            Purpose selectedPurpose = purposes[purposeIndex - 1];
+            string selectedPurpose = purposes[purposeIndex - 1];
 
             var citizenships = controller.GetListCitizenships();
             Console.WriteLine("\nВыберите гражданство:");
             for (int i = 0; i < citizenships.Count; i++)
-                Console.WriteLine($"{i + 1}. {citizenships[i].Name}");
+                Console.WriteLine($"{i + 1}. {citizenships[i]}");
 
             if (!int.TryParse(Console.ReadLine(), out int citizenshipIndex) || citizenshipIndex < 1 || citizenshipIndex > citizenships.Count)
             {
@@ -118,9 +118,9 @@ namespace project
                 return;
             }
 
-            Citizenship selectedCitizenship = citizenships[citizenshipIndex - 1];
+            string selectedCitizenship = citizenships[citizenshipIndex - 1];
 
-            if (selectedCitizenship.Name == "РФ")
+            if (selectedCitizenship == "РФ")
             {
                 Console.WriteLine("\nДорожная карта предусмотрена только для иностранных граждан.");
                 Console.WriteLine("Регистрация прекращена.\n");
@@ -128,6 +128,10 @@ namespace project
             }
 
             controller.ChoosePurposeAndCitizenship(login, selectedPurpose, selectedCitizenship);
+
+            Console.Write("Является ли пользователь участником Государственной программы переселения соотечественников или членом его семьи? (да/нет): ");
+            string isResettlementParticipant = Console.ReadLine().Trim().ToLower() == "да" ? "Да" : "Нет";
+            controller.SetProfileProperty(login, Profile.ResettlementProgramPropertyName, isResettlementParticipant);
 
             Console.WriteLine("\nРегистрация успешно завершена.");
         }

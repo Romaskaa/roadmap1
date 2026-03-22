@@ -95,12 +95,6 @@ namespace newproj.Builders
             if (conditions.IsForeignCitizen.HasValue)
                 builder.Add(new ForeignCitizenCondition(conditions.IsForeignCitizen.Value));
 
-            if (conditions.Purposes != null && conditions.Purposes.Any())
-                builder.Add(new PurposeCondition(conditions.Purposes));
-
-            if (conditions.Citizenships != null && conditions.Citizenships.Any())
-                builder.Add(new CitizenshipCondition(conditions.Citizenships));
-
             if (conditions.MinStayDaysExclusive.HasValue || conditions.MaxStayDaysInclusive.HasValue)
                 builder.Add(new StayDurationCondition(conditions.MinStayDaysExclusive, conditions.MaxStayDaysInclusive));
 
@@ -111,6 +105,12 @@ namespace newproj.Builders
             {
                 foreach (var propertyCondition in conditions.ProfileProperties)
                 {
+                    if (propertyCondition.Values != null && propertyCondition.Values.Any())
+                    {
+                        builder.Add(new ProfilePropertyInSetCondition(propertyCondition.Name, propertyCondition.Values));
+                        continue;
+                    }
+
                     builder.Add(new ProfilePropertyCondition(propertyCondition.Name, propertyCondition.Value));
                 }
             }
