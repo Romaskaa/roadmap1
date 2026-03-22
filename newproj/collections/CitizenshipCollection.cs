@@ -16,6 +16,11 @@ namespace project.Collections
             _citizenships = new List<Citizenship>
             {
                 new Citizenship("РФ"),
+                new Citizenship("Азербайджан"),
+                new Citizenship("Армения"),
+                new Citizenship("Киргизия"),
+                new Citizenship("Молдова"),
+                new Citizenship("Украина"),
                 new Citizenship("Узбекистан"),
                 new Citizenship("Таджикистан"),
                 new Citizenship("Казахстан"),

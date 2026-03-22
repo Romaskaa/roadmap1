@@ -69,11 +69,13 @@ namespace project.Collections
             {
                 foreach (var c in _citizens)
                 {
-                    string appDateStr = c.ApplicationDate.HasValue ? c.ApplicationDate.Value.ToString("dd.MM.yyyy") : "";
+                    string entryDateStr = c.GetEntryDate().ToString("dd.MM.yyyy");
+                    DateTime? applicationDate = c.GetApplicationDate();
+                    string appDateStr = applicationDate.HasValue ? applicationDate.Value.ToString("dd.MM.yyyy") : "";
                     string purposeStr = c.Purpose != null ? c.Purpose.Name : "";
                     string citizenStr = c.Citizenship != null ? c.Citizenship.Name : "";
 
-                    string line = $"{c.Login}|{c.Name}|{c.EntryDate:dd.MM.yyyy}|{appDateStr}|{purposeStr}|{citizenStr}";
+                    string line = $"{c.Login}|{c.Name}|{entryDateStr}|{appDateStr}|{purposeStr}|{citizenStr}";
                     sw.WriteLine(line);
                 }
             }
@@ -93,14 +95,15 @@ namespace project.Collections
                     var c = new ForeignCitizen
                     {
                         Login = parts[0],
-                        Name = parts[1],
-                        EntryDate = DateTime.Parse(parts[2])
+                        Name = parts[1]
                     };
 
+                    c.SetEntryDate(DateTime.Parse(parts[2]));
+
                     if (!string.IsNullOrEmpty(parts[3]))
-                        c.ApplicationDate = DateTime.Parse(parts[3]);
+                        c.SetApplicationDate(DateTime.Parse(parts[3]));
                     else
-                        c.ApplicationDate = null;
+                        c.SetApplicationDate(null);
 
                     if (!string.IsNullOrEmpty(parts[4]))
                         c.Purpose = new Purpose(parts[4]);
