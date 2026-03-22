@@ -11,12 +11,12 @@ namespace project.Collections
     public class ForeignCitizenCollection
     {
         private static ForeignCitizenCollection _instance;
-        private List<ForeignCitizen> _citizens;
+        private List<Profile> _citizens;
         private string FilePath = "citizens.txt";
 
         private ForeignCitizenCollection()
         {
-            _citizens = new List<ForeignCitizen>();
+            _citizens = new List<Profile>();
             LoadFromFile();
         }
 
@@ -39,7 +39,7 @@ namespace project.Collections
             }
 
             string login = nextId.ToString();
-            var newCitizen = new ForeignCitizen(login, name, entryDate, applicationDate);
+            var newCitizen = new Profile(login, name, entryDate, applicationDate);
             _citizens.Add(newCitizen);
 
             SaveToFile();
@@ -47,7 +47,7 @@ namespace project.Collections
             return login;
         }
 
-        public ForeignCitizen GetCitizen(string login)
+        public Profile GetCitizen(string login)
         {
             return _citizens.FirstOrDefault(c => c.Login == login);
         }
@@ -92,7 +92,7 @@ namespace project.Collections
                 var parts = line.Split('|');
                 if (parts.Length >= 6)
                 {
-                    var c = new ForeignCitizen
+                    var c = new Profile
                     {
                         Login = parts[0],
                         Name = parts[1]

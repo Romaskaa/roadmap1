@@ -18,12 +18,12 @@ public class Rule
         TargetDocuments = new List<TargetDocument>();
     }
 
-    public bool IsApplicable(ForeignCitizen citizen)
+    public bool IsApplicable(Profile citizen)
     {
         return Condition == null || Condition.IsSatisfied(citizen);
     }
 
-    public string Apply(ForeignCitizen citizen)
+    public string Apply(Profile citizen)
     {
         var builder = new StringBuilder();
         var deadline = Trigger != null ? Trigger.ResolveDeadline(citizen) : (DateTime?)null;

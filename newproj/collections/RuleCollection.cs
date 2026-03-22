@@ -32,7 +32,7 @@ public class RuleCollection
             .ToList();
     }
 
-    public string GetMessage(ForeignCitizen citizen)
+    public string GetMessage(Profile citizen)
     {
         var applicableRules = _ruleEngine.Evaluate(_rules, citizen);
 

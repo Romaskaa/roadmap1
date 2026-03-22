@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace project.Controllers
 {
-    public class ForeignCitizen
+    public class Profile
     {
         public const string EntryDatePropertyName = "ДатаВъезда";
         public const string ApplicationDatePropertyName = "ДатаЗаявления";
@@ -19,7 +19,7 @@ namespace project.Controllers
         public string RejectionReason { get; set; }
         public List<ProfileProperty> Properties { get; set; }
 
-        public ForeignCitizen(string login, string name, DateTime entryDate, DateTime? applicationDate)
+        public Profile(string login, string name, DateTime entryDate, DateTime? applicationDate)
         {
             Login = login;
             Name = name;
@@ -96,7 +96,7 @@ namespace project.Controllers
             property.Value = value;
         }
 
-        public ForeignCitizen()
+        public Profile()
         {
             Properties = new List<ProfileProperty>();
         }

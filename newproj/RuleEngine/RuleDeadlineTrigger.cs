@@ -16,7 +16,7 @@ namespace newproj.RuleEngine
         public int Days { get; set; }
         public string Description { get; set; }
 
-        public DateTime? ResolveDeadline(ForeignCitizen citizen)
+        public DateTime? ResolveDeadline(Profile citizen)
         {
             if (citizen == null)
                 return null;

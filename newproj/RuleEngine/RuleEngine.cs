@@ -9,7 +9,7 @@ namespace newproj.RuleEngine
 {
     public class RuleEngine
     {
-        public List<Rule> Evaluate(IEnumerable<Rule> rules, ForeignCitizen citizen)
+        public List<Rule> Evaluate(IEnumerable<Rule> rules, Profile citizen)
         {
             return rules
                 .Where(rule => rule != null && rule.IsApplicable(citizen))

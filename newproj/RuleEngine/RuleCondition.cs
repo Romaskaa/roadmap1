@@ -24,7 +24,7 @@ namespace newproj.RuleEngine
             return this;
         }
 
-        public bool IsSatisfied(ForeignCitizen citizen)
+        public bool IsSatisfied(Profile citizen)
         {
             return _conditions.All(condition => condition.IsSatisfied(citizen));
         }
@@ -39,7 +39,7 @@ namespace newproj.RuleEngine
             _expectedValue = expectedValue;
         }
 
-        public bool IsSatisfied(ForeignCitizen citizen)
+        public bool IsSatisfied(Profile citizen)
         {
             return citizen != null && citizen.IsForeignCitizen == _expectedValue;
         }
@@ -54,7 +54,7 @@ namespace newproj.RuleEngine
             _purposes = new HashSet<string>(purposes ?? Enumerable.Empty<string>());
         }
 
-        public bool IsSatisfied(ForeignCitizen citizen)
+        public bool IsSatisfied(Profile citizen)
         {
             return citizen != null &&
                    citizen.Purpose != null &&
@@ -71,7 +71,7 @@ namespace newproj.RuleEngine
             _citizenships = new HashSet<string>(citizenships ?? Enumerable.Empty<string>());
         }
 
-        public bool IsSatisfied(ForeignCitizen citizen)
+        public bool IsSatisfied(Profile citizen)
         {
             return citizen != null &&
                    citizen.Citizenship != null &&
@@ -90,7 +90,7 @@ namespace newproj.RuleEngine
             _maxInclusive = maxInclusive;
         }
 
-        public bool IsSatisfied(ForeignCitizen citizen)
+        public bool IsSatisfied(Profile citizen)
         {
             if (citizen == null || !citizen.DurationDays.HasValue)
                 return false;
@@ -116,7 +116,7 @@ namespace newproj.RuleEngine
             _required = required;
         }
 
-        public bool IsSatisfied(ForeignCitizen citizen)
+        public bool IsSatisfied(Profile citizen)
         {
             var hasApplication = citizen != null && citizen.HasApplication();
             return hasApplication == _required;
@@ -134,7 +134,7 @@ namespace newproj.RuleEngine
             _expectedValue = expectedValue;
         }
 
-        public bool IsSatisfied(ForeignCitizen citizen)
+        public bool IsSatisfied(Profile citizen)
         {
             if (citizen == null)
                 return false;
