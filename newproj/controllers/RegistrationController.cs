@@ -10,14 +10,31 @@ namespace project.Collections
     public class RegistrationController
     {
         private readonly ForeignCitizenCollection _citizens;
-        private readonly PurposeCollection _purposeCollection;
-        private readonly CitizenshipCollection _citizenshipCollection;
+        private readonly List<string> _purposes;
+        private readonly List<string> _citizenships;
 
         public RegistrationController()
         {
             _citizens = ForeignCitizenCollection.Instance;
-            _purposeCollection = new PurposeCollection();
-            _citizenshipCollection = new CitizenshipCollection();
+            _purposes = new List<string>
+            {
+                "Трудовая деятельность",
+                "Иная"
+            };
+            _citizenships = new List<string>
+            {
+                "РФ",
+                "Азербайджан",
+                "Армения",
+                "Киргизия",
+                "Молдова",
+                "Украина",
+                "Узбекистан",
+                "Таджикистан",
+                "Казахстан",
+                "Китай",
+                "Другое"
+            };
         }
 
         public string EnterCitizen(string name, DateTime entryDate, DateTime? applicationDate)
@@ -25,19 +42,24 @@ namespace project.Collections
             return _citizens.EnterCitizen(name, entryDate, applicationDate);
         }
 
-        public List<Purpose> GetListPurposes()
+        public List<string> GetListPurposes()
         {
-            return _purposeCollection.GetListPurposes();
+            return _purposes;
         }
 
-        public List<Citizenship> GetListCitizenships()
+        public List<string> GetListCitizenships()
         {
-            return _citizenshipCollection.GetListCitizenships();
+            return _citizenships;
         }
 
-        public void ChoosePurposeAndCitizenship(string login, Purpose selectedPurpose, Citizenship selectedCitizenship)
+        public void ChoosePurposeAndCitizenship(string login, string selectedPurpose, string selectedCitizenship)
         {
             _citizens.ChoosePurposeAndCitizenship(login, selectedPurpose, selectedCitizenship);
+        }
+
+        public void SetProfileProperty(string login, string propertyName, string value)
+        {
+            _citizens.SetProfileProperty(login, propertyName, value);
         }
     }
 }

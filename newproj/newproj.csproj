@@ -45,19 +45,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builders\RuleBuilder.cs" />
-    <Compile Include="collections\CitizenshipCollection.cs" />
     <Compile Include="collections\ForeignCitizenCollection.cs" />
-    <Compile Include="collections\PurposeCollection.cs" />
     <Compile Include="collections\RoadmapCollection.cs" />
     <Compile Include="collections\RuleCollection.cs" />
     <Compile Include="controllers\RegistrationController.cs" />
     <Compile Include="controllers\RoadmapController.cs" />
-    <Compile Include="domain\Citizenship.cs" />
     <Compile Include="domain\Guide.cs" />
     <Compile Include="domain\Profile.cs" />
     <Compile Include="domain\Organization.cs" />
     <Compile Include="domain\ProfileProperty.cs" />
-    <Compile Include="domain\Purpose.cs" />
     <Compile Include="domain\TargetDocument.cs" />
     <Compile Include="DTO\JsonRule.cs" />
     <Compile Include="Infrastructure\JsonRuleLoader.cs" />

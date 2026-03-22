@@ -52,15 +52,25 @@ namespace project.Collections
             return _citizens.FirstOrDefault(c => c.Login == login);
         }
 
-        public void ChoosePurposeAndCitizenship(string login, Purpose selectedPurpose, Citizenship selectedCitizenship)
+        public void ChoosePurposeAndCitizenship(string login, string selectedPurpose, string selectedCitizenship)
         {
             var citizen = GetCitizen(login);
             if (citizen != null)
             {
-                citizen.Purpose = selectedPurpose;
-                citizen.Citizenship = selectedCitizenship;
+                citizen.SetPurpose(selectedPurpose);
+                citizen.SetCitizenship(selectedCitizenship);
                 SaveToFile();
             }
+        }
+
+        public void SetProfileProperty(string login, string propertyName, string value)
+        {
+            var citizen = GetCitizen(login);
+            if (citizen == null)
+                return;
+
+            citizen.SetProperty(propertyName, value);
+            SaveToFile();
         }
 
         private void SaveToFile()
@@ -72,10 +82,11 @@ namespace project.Collections
                     string entryDateStr = c.GetEntryDate().ToString("dd.MM.yyyy");
                     DateTime? applicationDate = c.GetApplicationDate();
                     string appDateStr = applicationDate.HasValue ? applicationDate.Value.ToString("dd.MM.yyyy") : "";
-                    string purposeStr = c.Purpose != null ? c.Purpose.Name : "";
-                    string citizenStr = c.Citizenship != null ? c.Citizenship.Name : "";
+                    string purposeStr = c.GetPurpose() ?? "";
+                    string citizenStr = c.GetCitizenship() ?? "";
+                    string extraProperties = SerializeAdditionalProperties(c);
 
-                    string line = $"{c.Login}|{c.Name}|{entryDateStr}|{appDateStr}|{purposeStr}|{citizenStr}";
+                    string line = $"{c.Login}|{c.Name}|{entryDateStr}|{appDateStr}|{purposeStr}|{citizenStr}|{extraProperties}";
                     sw.WriteLine(line);
                 }
             }
@@ -106,14 +117,65 @@ namespace project.Collections
                         c.SetApplicationDate(null);
 
                     if (!string.IsNullOrEmpty(parts[4]))
-                        c.Purpose = new Purpose(parts[4]);
+                        c.SetPurpose(parts[4]);
 
                     if (!string.IsNullOrEmpty(parts[5]))
-                        c.Citizenship = new Citizenship(parts[5]);
+                        c.SetCitizenship(parts[5]);
+
+                    if (parts.Length >= 7 && !string.IsNullOrEmpty(parts[6]))
+                        DeserializeAdditionalProperties(c, parts[6]);
 
                     _citizens.Add(c);
                 }
             }
+        }
+
+        private string SerializeAdditionalProperties(Profile citizen)
+        {
+            var additionalProperties = citizen.Properties
+                .Where(property => property != null)
+                .Where(property =>
+                    property.Name != Profile.EntryDatePropertyName &&
+                    property.Name != Profile.ApplicationDatePropertyName &&
+                    property.Name != Profile.PurposePropertyName &&
+                    property.Name != Profile.CitizenshipPropertyName)
+                .Select(property => string.Format(
+                    "{0}={1}",
+                    Escape(property.Name),
+                    Escape(property.Value)))
+                .ToList();
+
+            return string.Join(";", additionalProperties);
+        }
+
+        private void DeserializeAdditionalProperties(Profile citizen, string serializedProperties)
+        {
+            foreach (var item in serializedProperties.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                var parts = item.Split(new[] { '=' }, 2);
+                if (parts.Length != 2)
+                    continue;
+
+                citizen.SetProperty(Unescape(parts[0]), Unescape(parts[1]));
+            }
+        }
+
+        private string Escape(string value)
+        {
+            return (value ?? string.Empty)
+                .Replace("%", "%25")
+                .Replace("|", "%7C")
+                .Replace(";", "%3B")
+                .Replace("=", "%3D");
+        }
+
+        private string Unescape(string value)
+        {
+            return (value ?? string.Empty)
+                .Replace("%3D", "=")
+                .Replace("%3B", ";")
+                .Replace("%7C", "|")
+                .Replace("%25", "%");
         }
     }
 }

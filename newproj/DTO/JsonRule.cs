@@ -39,8 +39,6 @@ namespace newproj.DTO
     public class JsonRuleCondition
     {
         public bool? IsForeignCitizen { get; set; }
-        public List<string> Purposes { get; set; }
-        public List<string> Citizenships { get; set; }
         public int? MinStayDaysExclusive { get; set; }
         public int? MaxStayDaysInclusive { get; set; }
         public bool? RequiresApplication { get; set; }
@@ -51,5 +49,6 @@ namespace newproj.DTO
     {
         public string Name { get; set; }
         public string Value { get; set; }
+        public List<string> Values { get; set; }
     }
 }
