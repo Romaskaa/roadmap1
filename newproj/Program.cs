@@ -129,10 +129,6 @@ namespace project
 
             controller.ChoosePurposeAndCitizenship(login, selectedPurpose, selectedCitizenship);
 
-            Console.Write("Является ли пользователь участником Государственной программы переселения соотечественников или членом его семьи? (да/нет): ");
-            string isResettlementParticipant = Console.ReadLine().Trim().ToLower() == "да" ? "Да" : "Нет";
-            controller.SetProfileProperty(login, Profile.ResettlementProgramPropertyName, isResettlementParticipant);
-
             Console.WriteLine("\nРегистрация успешно завершена.");
         }
 

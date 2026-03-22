@@ -92,14 +92,6 @@ namespace project.Controllers
             SetProperty(CitizenshipPropertyName, citizenship);
         }
 
-        public bool IsResettlementProgramParticipant()
-        {
-            return string.Equals(
-                GetPropertyValue(ResettlementProgramPropertyName),
-                "Да",
-                StringComparison.OrdinalIgnoreCase);
-        }
-
         public void SetEntryDate(DateTime entryDate)
         {
             SetProperty(EntryDatePropertyName, entryDate.ToString("o"));
