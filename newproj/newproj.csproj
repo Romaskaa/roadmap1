@@ -55,7 +55,7 @@
     <Compile Include="domain\Citizenship.cs" />
     <Compile Include="domain\Guide.cs" />
     <Compile Include="domain\Profile.cs" />
-    <Compile Include="domain\MedicalOrganization.cs" />
+    <Compile Include="domain\Organization.cs" />
     <Compile Include="domain\ProfileProperty.cs" />
     <Compile Include="domain\Purpose.cs" />
     <Compile Include="domain\TargetDocument.cs" />

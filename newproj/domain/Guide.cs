@@ -6,11 +6,11 @@ namespace project.Controllers
     {
         public string Description { get; set; }
         public string Rejection { get; set; }
-        public List<MedicalOrganization> Organizations { get; set; }
+        public List<Organization> Organizations { get; set; }
 
         public Guide()
         {
-            Organizations = new List<MedicalOrganization>();
+            Organizations = new List<Organization>();
         }
     }
 }

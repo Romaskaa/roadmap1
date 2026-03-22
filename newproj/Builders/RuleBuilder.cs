@@ -40,7 +40,7 @@ namespace newproj.Builders
             if (guide.Organizations != null)
             {
                 result.Organizations = guide.Organizations
-                    .Select(o => new MedicalOrganization
+                    .Select(o => new Organization
                     {
                         Name = o.Name,
                         Address = o.Address
