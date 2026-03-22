@@ -11,12 +11,12 @@ namespace project.Collections
     public class ForeignCitizenCollection
     {
         private static ForeignCitizenCollection _instance;
-        private List<ForeignCitizen> _citizens;
+        private List<Profile> _citizens;
         private string FilePath = "citizens.txt";
 
         private ForeignCitizenCollection()
         {
-            _citizens = new List<ForeignCitizen>();
+            _citizens = new List<Profile>();
             LoadFromFile();
         }
 
@@ -39,7 +39,7 @@ namespace project.Collections
             }
 
             string login = nextId.ToString();
-            var newCitizen = new ForeignCitizen(login, name, entryDate, applicationDate);
+            var newCitizen = new Profile(login, name, entryDate, applicationDate);
             _citizens.Add(newCitizen);
 
             SaveToFile();
@@ -47,7 +47,7 @@ namespace project.Collections
             return login;
         }
 
-        public ForeignCitizen GetCitizen(string login)
+        public Profile GetCitizen(string login)
         {
             return _citizens.FirstOrDefault(c => c.Login == login);
         }
@@ -69,11 +69,13 @@ namespace project.Collections
             {
                 foreach (var c in _citizens)
                 {
-                    string appDateStr = c.ApplicationDate.HasValue ? c.ApplicationDate.Value.ToString("dd.MM.yyyy") : "";
+                    string entryDateStr = c.GetEntryDate().ToString("dd.MM.yyyy");
+                    DateTime? applicationDate = c.GetApplicationDate();
+                    string appDateStr = applicationDate.HasValue ? applicationDate.Value.ToString("dd.MM.yyyy") : "";
                     string purposeStr = c.Purpose != null ? c.Purpose.Name : "";
                     string citizenStr = c.Citizenship != null ? c.Citizenship.Name : "";
 
-                    string line = $"{c.Login}|{c.Name}|{c.EntryDate:dd.MM.yyyy}|{appDateStr}|{purposeStr}|{citizenStr}";
+                    string line = $"{c.Login}|{c.Name}|{entryDateStr}|{appDateStr}|{purposeStr}|{citizenStr}";
                     sw.WriteLine(line);
                 }
             }
@@ -90,17 +92,18 @@ namespace project.Collections
                 var parts = line.Split('|');
                 if (parts.Length >= 6)
                 {
-                    var c = new ForeignCitizen
+                    var c = new Profile
                     {
                         Login = parts[0],
-                        Name = parts[1],
-                        EntryDate = DateTime.Parse(parts[2])
+                        Name = parts[1]
                     };
 
+                    c.SetEntryDate(DateTime.Parse(parts[2]));
+
                     if (!string.IsNullOrEmpty(parts[3]))
-                        c.ApplicationDate = DateTime.Parse(parts[3]);
+                        c.SetApplicationDate(DateTime.Parse(parts[3]));
                     else
-                        c.ApplicationDate = null;
+                        c.SetApplicationDate(null);
 
                     if (!string.IsNullOrEmpty(parts[4]))
                         c.Purpose = new Purpose(parts[4]);

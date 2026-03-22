@@ -3,10 +3,119 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using newproj.DTO;
+using newproj.RuleEngine;
+using project.Controllers;
 
 namespace newproj.Builders
 {
-    internal class RuleBuilder
+    public class RuleBuilder
     {
+        public Rule Build(JsonRule jsonRule)
+        {
+            if (jsonRule == null)
+                throw new ArgumentNullException("jsonRule");
+
+            return new Rule
+            {
+                Name = jsonRule.Name,
+                Order = jsonRule.Order,
+                Guide = BuildGuide(jsonRule.Guide),
+                TargetDocuments = BuildTargetDocuments(jsonRule.TargetDocuments),
+                Trigger = BuildTrigger(jsonRule.Trigger),
+                Condition = BuildCondition(jsonRule.Conditions)
+            };
+        }
+
+        private Guide BuildGuide(JsonGuide guide)
+        {
+            var result = new Guide();
+
+            if (guide == null)
+                return result;
+
+            result.Description = guide.Description;
+            result.Rejection = guide.Rejection;
+
+            if (guide.Organizations != null)
+            {
+                result.Organizations = guide.Organizations
+                    .Select(o => new Organization
+                    {
+                        Name = o.Name,
+                        Address = o.Address
+                    })
+                    .ToList();
+            }
+
+            return result;
+        }
+
+        private List<TargetDocument> BuildTargetDocuments(List<string> targetDocuments)
+        {
+            if (targetDocuments == null)
+                return new List<TargetDocument>();
+
+            return targetDocuments
+                .Select(name => new TargetDocument(name))
+                .ToList();
+        }
+
+        private RuleDeadlineTrigger BuildTrigger(JsonDeadlineTrigger trigger)
+        {
+            if (trigger == null)
+                return new RuleDeadlineTrigger();
+
+            return new RuleDeadlineTrigger
+            {
+                Anchor = ParseAnchor(trigger.Anchor),
+                Days = trigger.Days,
+                Description = trigger.Description
+            };
+        }
+
+        private DeadlineAnchor ParseAnchor(string anchor)
+        {
+            if (string.Equals(anchor, "application", StringComparison.OrdinalIgnoreCase))
+                return DeadlineAnchor.ApplicationDate;
+
+            if (string.Equals(anchor, "entry_or_application", StringComparison.OrdinalIgnoreCase))
+                return DeadlineAnchor.EntryOrApplicationDate;
+
+            return DeadlineAnchor.EntryDate;
+        }
+
+        private IRuleCondition BuildCondition(JsonRuleCondition conditions)
+        {
+            var builder = new CompositeRuleCondition();
+
+            if (conditions == null)
+                return builder;
+
+            if (conditions.IsForeignCitizen.HasValue)
+                builder.Add(new ForeignCitizenCondition(conditions.IsForeignCitizen.Value));
+
+            if (conditions.Purposes != null && conditions.Purposes.Any())
+                builder.Add(new PurposeCondition(conditions.Purposes));
+
+            if (conditions.Citizenships != null && conditions.Citizenships.Any())
+                builder.Add(new CitizenshipCondition(conditions.Citizenships));
+
+            if (conditions.MinStayDaysExclusive.HasValue || conditions.MaxStayDaysInclusive.HasValue)
+                builder.Add(new StayDurationCondition(conditions.MinStayDaysExclusive, conditions.MaxStayDaysInclusive));
+
+            if (conditions.RequiresApplication.HasValue)
+                builder.Add(new ApplicationPresenceCondition(conditions.RequiresApplication.Value));
+
+            if (conditions.ProfileProperties != null)
+            {
+                foreach (var propertyCondition in conditions.ProfileProperties)
+                {
+                    builder.Add(new ProfilePropertyCondition(propertyCondition.Name, propertyCondition.Value));
+                }
+            }
+
+            return builder;
+        }
     }
 }

@@ -9,6 +9,6 @@ namespace newproj.RuleEngine
 {
     public interface IRuleCondition
     {
-        bool IsSatisfied(ForeignCitizen citizen);
+        bool IsSatisfied(Profile citizen);
     }
 }
