@@ -68,6 +68,7 @@
     <Compile Include="domain\Profile.cs" />
     <Compile Include="domain\Organization.cs" />
     <Compile Include="domain\ProfileProperty.cs" />
+    <Compile Include="domain\Roadmap.cs" />
     <Compile Include="domain\TargetDocument.cs" />
     <Compile Include="DTO\JsonRule.cs" />
     <Compile Include="Infrastructure\JsonRuleLoader.cs" />
