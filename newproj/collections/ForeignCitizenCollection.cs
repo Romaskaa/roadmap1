@@ -29,8 +29,11 @@ namespace project.Collections
             }
         }
 
-        public string EnterCitizen(string name, DateTime entryDate, DateTime? applicationDate)
+        public string EnterCitizen(Profile citizen)
         {
+            if (citizen == null)
+                throw new ArgumentNullException(nameof(citizen));
+
             int nextId = 1;
             if (_citizens.Any())
             {
@@ -38,13 +41,12 @@ namespace project.Collections
                 nextId = maxId + 1;
             }
 
-            string login = nextId.ToString();
-            var newCitizen = new Profile(login, name, entryDate, applicationDate);
-            _citizens.Add(newCitizen);
+            citizen.Login = nextId.ToString();
+            _citizens.Add(citizen);
 
             SaveToFile();
 
-            return login;
+            return citizen.Login;
         }
 
         public Profile GetCitizen(string login)

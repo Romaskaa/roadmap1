@@ -37,9 +37,9 @@ namespace project.Collections
             };
         }
 
-        public string EnterCitizen(string name, DateTime entryDate, DateTime? applicationDate)
+        public string EnterCitizen(Profile citizen)
         {
-            return _citizens.EnterCitizen(name, entryDate, applicationDate);
+            return _citizens.EnterCitizen(citizen);
         }
 
         public List<string> GetListPurposes()

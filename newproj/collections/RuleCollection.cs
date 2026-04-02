@@ -11,11 +11,9 @@ using newproj.RuleEngine;
 public class RuleCollection
 {
     private readonly List<Rule> _rules;
-    private readonly RuleEngine _ruleEngine;
 
     public RuleCollection()
     {
-        _ruleEngine = new RuleEngine();
         _rules = InitializeRules();
     }
 
@@ -34,7 +32,21 @@ public class RuleCollection
 
     public string GetMessage(Profile citizen)
     {
-        var applicableRules = _ruleEngine.Evaluate(_rules, citizen);
+        if (_rules == null)
+            return "Подходящих правил не найдено.";
+
+        var applicableRules = new List<Rule>();
+
+        foreach (var rule in _rules)
+        {
+            if (rule == null)
+                continue;
+
+            if (rule.IsApplicable(citizen))
+                applicableRules.Add(rule);
+        }
+
+        applicableRules.Sort((left, right) => left.Order.CompareTo(right.Order));
 
         if (!applicableRules.Any())
             return "Подходящих правил не найдено.";

@@ -91,7 +91,16 @@ namespace project
                 applicationDate = appDate;
             }
 
-            string login = controller.EnterCitizen(name, entryDate, applicationDate);
+            var profileProperties = new List<ProfileProperty>
+            {
+                new ProfileProperty(Profile.EntryDatePropertyName, entryDate.ToString("o"))
+            };
+
+            if (applicationDate.HasValue)
+                profileProperties.Add(new ProfileProperty(Profile.ApplicationDatePropertyName, applicationDate.Value.ToString("o")));
+
+            var citizen = new Profile(null, name, profileProperties);
+            string login = controller.EnterCitizen(citizen);
             Console.WriteLine($"\nВаш логин: {login}");
 
             var purposes = controller.GetListPurposes();

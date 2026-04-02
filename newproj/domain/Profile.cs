@@ -20,13 +20,13 @@ namespace project.Controllers
         public string RejectionReason { get; set; }
         public List<ProfileProperty> Properties { get; set; }
 
-        public Profile(string login, string name, DateTime entryDate, DateTime? applicationDate)
+        public Profile(string login, string name, IEnumerable<ProfileProperty> properties)
         {
             Login = login;
             Name = name;
-            Properties = new List<ProfileProperty>();
-            SetEntryDate(entryDate);
-            SetApplicationDate(applicationDate);
+            Properties = properties != null
+                ? properties.Where(property => property != null).ToList()
+                : new List<ProfileProperty>();
         }
 
         public bool IsForeignCitizen
