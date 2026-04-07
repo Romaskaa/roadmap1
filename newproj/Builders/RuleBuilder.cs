@@ -11,6 +11,21 @@ namespace newproj.Builders
 {
     public class RuleBuilder
     {
+        public Roadmap BuildRoadmap(JsonRoadmap jsonRoadmap)
+        {
+            if (jsonRoadmap == null)
+                throw new ArgumentNullException("jsonRoadmap");
+
+            return new Roadmap
+            {
+                Version = string.IsNullOrWhiteSpace(jsonRoadmap.Version) ? "1.0" : jsonRoadmap.Version,
+                Rules = (jsonRoadmap.Rules ?? new List<JsonRule>())
+                    .Select(Build)
+                    .OrderBy(rule => rule.Order)
+                    .ToList()
+            };
+        }
+
         public Rule Build(JsonRule jsonRule)
         {
             if (jsonRule == null)
@@ -37,27 +52,26 @@ namespace newproj.Builders
             result.Description = guide.Description;
             result.Rejection = guide.Rejection;
 
-            if (guide.Organizations != null)
-            {
-                result.Organizations = guide.Organizations
-                    .Select(o => new Organization
-                    {
-                        Name = o.Name,
-                        Address = o.Address
-                    })
-                    .ToList();
-            }
-
             return result;
         }
 
-        private List<TargetDocument> BuildTargetDocuments(List<string> targetDocuments)
+        private List<TargetDocument> BuildTargetDocuments(List<JsonTargetDocument> targetDocuments)
         {
             if (targetDocuments == null)
                 return new List<TargetDocument>();
 
             return targetDocuments
-                .Select(name => new TargetDocument(name))
+                .Select(document => new TargetDocument
+                {
+                    Name = document.Name,
+                    Organizations = (document.Organizations ?? new List<JsonOrganization>())
+                        .Select(o => new Organization
+                        {
+                            Name = o.Name,
+                            Address = o.Address
+                        })
+                        .ToList()
+                })
                 .ToList();
         }
 

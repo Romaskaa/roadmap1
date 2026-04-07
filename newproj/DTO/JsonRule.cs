@@ -6,21 +6,33 @@ using System.Threading.Tasks;
 
 namespace newproj.DTO
 {
+
+    public class JsonRoadmap
+    {
+        public string Version { get; set; }
+        public List<JsonRule> Rules { get; set; }
+    }
+
     public class JsonRule
     {
         public string Name { get; set; }
         public int Order { get; set; }
-        public List<string> TargetDocuments { get; set; }
+        public List<JsonTargetDocument> TargetDocuments { get; set; }
         public JsonGuide Guide { get; set; }
         public JsonDeadlineTrigger Trigger { get; set; }
         public JsonRuleCondition Conditions { get; set; }
+    }
+
+    public class JsonTargetDocument
+    {
+        public string Name { get; set; }
+        public List<JsonOrganization> Organizations { get; set; }
     }
 
     public class JsonGuide
     {
         public string Description { get; set; }
         public string Rejection { get; set; }
-        public List<JsonOrganization> Organizations { get; set; }
     }
 
     public class JsonOrganization

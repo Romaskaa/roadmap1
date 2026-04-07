@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 public class Rule
 {
@@ -27,21 +28,23 @@ public class Rule
     {
         var builder = new StringBuilder();
         var deadline = Trigger != null ? Trigger.ResolveDeadline(citizen) : (DateTime?)null;
-        var organizations = Guide != null && Guide.Organizations != null
-            ? Guide.Organizations.Select(o => o.GetInfo()).ToList()
-            : new List<string>();
 
         builder.AppendLine(Name);
         builder.AppendLine("Что нужно получить:");
 
         foreach (var document in TargetDocuments)
+        { 
             builder.AppendLine($"- {document.Name}");
+            var organizations = document.Organizations != null
+                ? document.Organizations.Select(o => o.GetInfo()).ToList()
+                : new List<string>();
+
+            if (organizations.Any())
+                builder.AppendLine($"  Куда обратиться: {string.Join("; ", organizations)}");
+        }
 
         if (Guide != null && !string.IsNullOrWhiteSpace(Guide.Description))
             builder.AppendLine($"Что нужно сделать: {Guide.Description}");
-
-        if (organizations.Any())
-            builder.AppendLine($"Куда обратиться: {string.Join("; ", organizations)}");
 
         if (Trigger != null)
         {

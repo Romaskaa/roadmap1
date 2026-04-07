@@ -15,16 +15,8 @@ public class RuleCollection
         var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "rules.json");
         var loader = new JsonRuleLoader();
         var builder = new RuleBuilder();
-        var jsonRules = loader.Load(filePath);
-
-        var roadmap = new Roadmap
-        {
-            Version = "1.0",
-            Rules = jsonRules
-                .Select(builder.Build)
-                .OrderBy(rule => rule.Order)
-                .ToList()
-        };
+        var jsonRoadmap = loader.LoadRoadmap(filePath);
+        var roadmap = builder.BuildRoadmap(jsonRoadmap);
 
         if (roadmap?.Rules == null)
             return "Подходящих правил не найдено.";
